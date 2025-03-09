@@ -1,0 +1,39 @@
+# 剧情文件
+[chapter1]
+lines = [
+    "你来到了一个神秘的森林。",
+    "神秘角色出现在你面前。",
+    "神秘角色说：'你好，陌生人。'"
+]
+choices = [
+    {text = "友好地打招呼", pad_change = 1, next_chapter = "chapter2"},
+    {text = "冷淡地回应", pad_change = -1, next_chapter = "chapter3"}
+]
+
+[chapter2]
+lines = [
+    "神秘角色微笑着回应你。",
+    "他看起来很高兴。"
+]
+choices = [
+    {text = "继续交谈", pad_change = 1, next_chapter = "chapter4"},
+    {text = "离开", pad_change = -1, next_chapter = "ending1"}
+]
+
+[chapter3]
+lines = [
+    "神秘角色皱了皱眉，看起来有些不高兴。"
+]
+choices = [
+    {text = "道歉", pad_change = 1, next_chapter = "chapter2"},
+    {text = "强硬地离开", pad_change = -2, next_chapter = "ending2"}
+]
+
+[chapter4]
+lines = [
+    "神秘角色说：'很高兴认识你。'"
+]
+choices = [
+    {text = "回应", pad_change = 1, next_chapter = "ending3"},
+    {text = "无视", pad_change = -1, next_chapter = "ending2"}
+]

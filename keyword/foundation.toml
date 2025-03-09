@@ -1,0 +1,14 @@
+# 基础配置文件
+[intro]
+intro = """
+欢迎来到《文字冒险游戏》！
+你将扮演主角，与一个神秘角色互动。
+你的选择将影响结局。
+"""
+
+[character]
+character_name = "神秘角色"
+
+[current_state]
+current_chapter = "chapter1"
+pad = 0
