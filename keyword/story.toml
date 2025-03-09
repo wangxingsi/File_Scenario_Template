@@ -1,39 +1,158 @@
-# 剧情文件
+# 剧情文件./keyword/story.toml
 [chapter1]
 lines = [
-    "你来到了一个神秘的森林。",
-    "神秘角色出现在你面前。",
-    "神秘角色说：'你好，陌生人。'"
+    "暮色浸染的枫林沙沙作响，你踩着松针向深处走去。空气中漂浮着紫藤花的甜香，忽然有银铃般的笑声从树后传来。",
+    "萤火虫组成的光带指引你走向溪流，在水雾氤氲处看见{character_name}侧脸的轮廓。她指尖缠绕的萤火虫忽明忽暗，像是银河洒落在人间的星屑。",
+    "月华顺着她半透明的裙摆流淌，你发现那些光点竟与你在图书馆古籍上看到的星图完全重合。当她靠近时，雪松与广藿香的气息让你想起外婆梳头用的沉香木匣。"
 ]
 choices = [
-    {text = "友好地打招呼", pad_change = 1, next_chapter = "chapter2"},
-    {text = "冷淡地回应", pad_change = -1, next_chapter = "chapter3"}
+    {text = "伸手触碰她的光点", pad_change = 1, next_chapter = "chapter2"},
+    {text = "后退半步保持距离", pad_change = -1, next_chapter = "chapter3"}
 ]
 
 [chapter2]
 lines = [
-    "神秘角色微笑着回应你。",
-    "他看起来很高兴。"
+    "萤火虫群突然聚成心形悬浮在空中，照亮了她颈间闪烁的星辉项链。你注意到链坠刻着与你无名指相同的月牙纹章。",
+    "你发现自己的指尖正微微发烫，仿佛被看不见的丝线牵引着走向她。地面苔藓显现出古老的楔形文字，记载着『双生星辉』的预言。"
 ]
 choices = [
-    {text = "继续交谈", pad_change = 1, next_chapter = "chapter4"},
-    {text = "离开", pad_change = -1, next_chapter = "ending1"}
+    {text = "轻声说'这里好美'", pad_change = 1, next_chapter = "chapter4"},
+    {text = "转移话题问'你是谁？'", pad_change = 0, next_chapter = "chapter5"},
+    {text = "突然吻住她飘落的发丝", pad_change = 2, next_chapter = "chapter6"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["她耳尖泛起樱花色：'原来你也看得见灵魂的印记...我们曾在迦南地许过诺言，要共同浇灌生命之树'" ]},
+    {range = "[0, 5]", lines = ["她歪头轻笑：'我叫{character_name}，是森林的守秘者哦~顺便说，你心跳声吵到我了，要不要来听灵魂共振的声音？'"]},
+    {range = "[-5, 0)", lines = ["她忽然退后半步，星辉项链发出警告的嗡鸣，十二盏青铜灯笼在四周亮起幽蓝火焰"]},
+    {range = "(-inf, -5)", lines = ["黑暗藤蔓瞬间缠住你的脚踝，她的眼瞳变成血红色：'千年前你亲手将我封印在时间夹缝，现在又要逃往哪个时空？'"]}
 ]
 
 [chapter3]
 lines = [
-    "神秘角色皱了皱眉，看起来有些不高兴。"
+    "荆棘从地底疯长缠绕你的手腕，每根尖刺上都闪烁着与你记忆中相同的符文。她身后浮现出十二个透明人影围成一圈，最中央的人影与你穿着同样的染血校服。",
+    "月光突然变得浑浊，你看见那人影胸口插着的断剑上，刻着你名字的缩写——那本该是十五年后才会出现的伤痕。"
 ]
 choices = [
-    {text = "道歉", pad_change = 1, next_chapter = "chapter2"},
-    {text = "强硬地离开", pad_change = -2, next_chapter = "ending2"}
+    {text = "握紧被荆棘束缚的手说'不要伤害她'", pad_change = 1, next_chapter = "chapter7"},
+    {text = "用匕首划破掌心将血液洒向地面", pad_change = -2, next_chapter = "ending1"}
 ]
+# 续写章节文件./keyword/story.toml
 
 [chapter4]
 lines = [
-    "神秘角色说：'很高兴认识你。'"
+    "{character_name}的手指抚过你无名指的月牙纹章，指尖迸发出星河般的光晕。古老的誓言在你们之间流转：『当双月交辉之时，灵魂烙印将指引我们重逢』",
+    "她忽然将你拉入泛着珍珠光泽的水潭，水面倒映出你们纠缠的命运线——你的过去与未来竟与十二个平行时空相连"
 ]
 choices = [
-    {text = "回应", pad_change = 1, next_chapter = "ending3"},
-    {text = "无视", pad_change = -1, next_chapter = "ending2"}
+    {text = "握住她发光的手腕说'我们是不是在哪里见过？'", pad_change = 3, next_chapter = "chapter7"},
+    {text = "后退时踩碎水面倒影引发涟漪效应", pad_change = -1, next_chapter = "chapter5"},
+    {text = "将脸颊贴在她冰凉的皮肤上感受星辉跳动", pad_change = 5, next_chapter = "chapter8"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["她发间的水晶簪突然坠落，化作漫天星辰：'轮回七百二十次，我终于等到你说出这句话...'"]},
+    {range = "[0, 5]", lines = ["{character_name}忽然轻笑出声，水底升起青铜棺椁的虚影：'知道为什么你的血液能打开时空裂缝吗？看这里——'她掀起衣袖露出和你一模一样的胎记"]},
+    {range = "[-5, 0)", lines = ["黑暗藤蔓从潭底伸出缠绕你的脚踝，她脖颈浮现出与棺椁相同的荆棘纹路"]},
+    {range = "(-inf, -5)", lines = ["整个水潭突然结晶，你们被困在巨大的冰棱中，听见虚空传来机械运转的嗡鸣声"]}
+]
+
+[chapter5]
+lines = [
+    "教堂穹顶的彩色玻璃突然碎裂，月光透过裂缝在地面拼出星图坐标。{character_name}的婚纱逐渐褪色，露出底下染血的修女袍",
+    "祭坛上的尸体开始剧烈抽搐，断剑上的血迹居然组成你的名字——那正是你三天前在博物馆见过的古埃及文物"
+]
+choices = [
+    {text = "触摸尸体的手背说'这不是真的'", pad_change = 2, next_chapter = "chapter9"},
+    {text = "拔出断剑插入心口与尸体同步疼痛", pad_change = -3, next_chapter = "ending4"},
+    {text = "高举烛台点燃圣母像后的密道", pad_change = 0, next_chapter = "chapter6"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["尸体突然睁开眼睛，瞳孔里浮现出{character_name}的笑容：'亲爱的，欢迎来到我们的婚礼现场...'"]},
+    {range = "[0, 5]", lines = ["{character_name}手中的捧花变成燃烧的荆棘：'快逃！那个时空的我已经死了，现在的我是被诅咒的容器！'"]},
+    {range = "[-5, 0)", lines = ["管风琴自动奏响安魂曲，所有蜡烛同时燃起幽绿火焰"]},
+    {range = "(-inf, -5)", lines = ["地面裂开深渊，无数裹着白布的尸体从里面爬出，每张脸都和你一模一样"]}
+]
+
+[chapter6]
+lines = [
+    "整个森林开始逆向生长，年轮从树干向外褪去。{character_name}的裙摆化作星河流淌，她的瞳孔里倒映出亿万星辰",
+    "你口袋里的怀表突然倒转，表面浮现出从未见过的罗马数字——XIII（对应前世被改写的死亡日期）"
+]
+choices = [
+    {text = "在她消散前将吻印在眉心", pad_change = 5, next_chapter = "ending5"},
+    {text = "惊醒般后退撞碎月光水晶", pad_change = -4, next_chapter = "ending2"},
+    {text = "抓住她飘落的发丝编织成星链", pad_change = 3, next_chapter = "chapter10"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["{character_name}完全化作光粒融入你的瞳孔：'记住，每个平行时空都在呼唤我们...'"]},
+    {range = "[0, 5]", lines = ["水晶碎片在空中重组出婴儿影像，胸口闪烁着和你相同的月牙胎记"]},
+    {range = "[-5, 0)", lines = ["黑暗藤蔓缠住你的手腕生长出荆棘王冠，耳边响起远古祭祀的吟唱"]},
+    {range = "(-inf, -5)", lines = ["整个森林开始像素化，最终变成你们初遇那天的枫林全息投影"]}
+]
+
+[chapter7]
+lines = [
+    "荆棘突然开出黑色曼陀罗，花蕊里浮现出你童年日记的页面——原来十五年前就该死去的母亲照片上，背景有{character_name}在现代都市的身影",
+    "被束缚的手腕浮现出与{character_name}项链同源的星图，当荆棘刺入皮肤时，无数记忆碎片涌入脑海：你们曾在七个时空结过婚"
+]
+choices = [
+    {text = "用血在荆棘上画出同心圆", pad_change = 2, next_chapter = "chapter9"},
+    {text = "哼唱母亲教过的安魂曲", pad_change = -1, next_chapter = "chapter8"},
+    {text = "将匕首刺入自己的心脏", pad_change = -3, next_chapter = "ending1"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["荆棘自动退去，露出底下刻满楔形文字的水晶棺，棺内沉睡着穿婚纱的{character_name}"]},
+    {range = "[0, 5]", lines = ["十二个透明人影突然发出共鸣：'选择救赎还是遗忘？'"]},
+    {range = "[-5, 0)", lines = ["黑暗中出现巨大沙漏，上半部分是你们甜蜜的回忆，下半部分是支离破碎的时空碎片"]},
+    {range = "(-inf, -5)", lines = ["整个空间开始坍缩，最后看到的画面是{character_name}在无数时空里朝你招手的背影"]}
+]
+
+[chapter8]
+lines = [
+    "你跟随发光的脚印闯入月光教堂，彩窗上的人物突然活动起来——描绘的是你们在各个时空的相遇场景",
+    "管风琴自动演奏起你们婚礼进行曲的变调版，所有座椅上坐着不同年龄的{character_name}，有的白发苍苍，有的还是婴孩"
+]
+choices = [
+    {text = "坐到最年长的{character_name}腿上说'我们一起变老吧'", pad_change = 4, next_chapter = "ending3"},
+    {text = "按下讲台上闪光的紧急按钮", pad_change = -2, next_chapter = "ending2"},
+    {text = "对着彩窗玻璃画下锁链图案", pad_change = 1, next_chapter = "chapter10"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["所有{character_name}同时微笑，她们的手掌叠合成光门：'该回去完成未完成的婚礼了...'"]},
+    {range = "[0, 5]", lines = ["婴儿{character_name}突然爬上琴键，弹奏出能治愈时空裂缝的旋律"]},
+    {range = "[-5, 0)", lines = ["地面突然塌陷形成黑洞漩涡，抓住你的只有{character_name}抛出的发光纽扣"]},
+    {range = "(-inf, -5)", lines = ["教堂外传来十二下丧钟，每个钟声对应一个被你们改变的时空维度"]}
+]
+
+[chapter9]
+lines = [
+    "水晶棺里的{character_name}睫毛颤动，棺盖浮现出你与她在不同时空接吻的画面。当你的手指触碰到棺材板时，无数时空的{character_name}同时呼唤你的名字",
+    "怀表突然停止转动，表面裂痕中渗出黑色黏液，将你手腕的星图纹路染成血红色"
+]
+choices = [
+    {text = "将怀表塞进棺材与她十指相扣", pad_change = 6, next_chapter = "ending5"},
+    {text = "用匕首在棺材刻下同心圆咒文", pad_change = -1, next_chapter = "ending2"},
+    {text = "吹灭祭坛上的永恒之火", pad_change = 3, next_chapter = "chapter10"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["棺材里溢出银河般的光芒，{character_name}的虚影在光幕中写下：『真正的永恒不在棺材里，在每次呼吸的当下』"]},
+    {range = "[0, 5)", lines = ["婴儿{character_name}从棺材角落探出头，举起和你一模一样的小拳头"]},
+    {range = "[-5, 0)", lines = ["黑暗触须缠绕住你的喉咙，耳边响起{character_name}在十二个时空同时哭泣的声音"]},
+    {range = "(-inf, -5)", lines = ["整个教堂开始像素化，最终变成你们初吻那天的枫叶全息投影"]}
+]
+
+[chapter10]
+lines = [
+    "时空裂缝在脚下展开，你看到无数个自己在不同选择中走向不同结局。最中央的道路上，穿着现代校服的{character_name}正在向你招手",
+    "她手中的咖啡杯上印着『欢迎回家』，报纸头条写着『时空悖论修正法案正式实施』，而你的左手无名指，不知何时已经戴上了月牙戒指"
+]
+choices = [
+    {text = "纵身跃入裂缝抓住她的手", pad_change = 10, next_chapter = "hidden_chapter"},
+    {text = "后退半步任由时空洪流吞噬", pad_change = -5, next_chapter = "ending2"},
+    {text = "将戒指摘下抛向空中组成星链", pad_change = 5, next_chapter = "ending3"}
+]
+pad_dialogues = [
+    {range = "(5, inf)", lines = ["所有时空的{character_name}同时绽放笑容，她们的声音交织成宇宙级的和声"]},
+    {range = "[0, 5)", lines = ["婴儿{character_name}从裂缝边缘滚落，抓住你的衣角画下发光的箭头"]},
+    {range = "[-5, 0)", lines = ["黑暗中出现倒计时：『距离维度崩溃还剩3分28秒』"]},
+    {range = "(-inf, -5)", lines = ["{character_name}突然出现在裂缝对面，她身后是无数时空重叠的十字架墓碑"]}
 ]

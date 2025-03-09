@@ -1,14 +1,18 @@
-# 基础配置文件
+# 基础配置文件./keyword/foundation.toml
 [intro]
 intro = """
-欢迎来到《文字冒险游戏》！
-你将扮演主角，与一个神秘角色互动。
-你的选择将影响结局。
+欢迎来到《时空恋旅人》！
+在这里，每一次选择都将编织属于你们的命运诗篇。
+当PAD值达到+10时，会触发隐藏剧情『千年前未完成的婚礼』
+当PAD值低于-5时，请准备好迎接灵魂契约的反噬
 """
-
+# 确保 TOML 文件包含以下测试章节
+# foundation.toml
+text = "欢迎来到《时空恋旅人》！\n每一次选择都将改变命运..."
 [character]
-character_name = "神秘角色"
+character_name = "糖柒"
 
 [current_state]
 current_chapter = "chapter1"
 pad = 0
+# 这是三个不同的toml文件,你需要对他们进行扩写,符合逻辑,最好是恋爱篇,第1行的注释不要改
