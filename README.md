@@ -6,9 +6,7 @@
 用于演示文本剧情怎么开发的指导
 
 ### 功能介绍
-- [**运行函数python版**(如果你不熟悉，不建议修改)](main.py)
-- [**运行函数C++版**(如果你不熟悉，不建议修改)](main.cpp)
-- [**运行函数js版**(如果你不熟悉，不建议修改)](main.js)
+- [**主函数注意事项**](注意事项.md)
 - [**结局文件**](keyword/endings.toml)
 - [**基础配置文件**](keyword/foundation.toml)
 - [**剧情文件**](keyword/story.toml)

@@ -1,205 +1,218 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <vector>
 #include <map>
-#include <variant>
-#include <chrono>
-#include <thread>
-#include <filesystem>
+#include <regex>
+#include <toml11/toml.hpp>
+#include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
 
-using namespace std;
-using namespace std::chrono_literals;
+// 日志初始化
+auto logger = spdlog::basic_logger_mt("game_log", "game.log");
 
-// TOML解析相关类型定义
-using TomlValue = std::variant<
-    int,
-    double,
-    string,
-    bool,
-    std::map<string, TomlValue>,
-    std::vector<TomlValue>
->;
-
-namespace toml {
-    using TomlMap = std::map<std::string, TomlValue>;
-}
-
-// TOML解析函数（简化版）
-toml::Tompkin::Toml parse_toml(const string& filename) {
-    ifstream file(filename);
-    toml::Tompkin::Toml toml;
-    file >> toml;
-    return toml;
-}
-
-void save_toml(const string& filename, const toml::Tompkin::Toml& data) {
-    ofstream file(filename);
-    file << data;
-}
-
+// 游戏类
 class Game {
-private:
-    toml::Tompkin::Toml config;
-    toml::Tompkin::Toml story;
-    toml::Tompkin::Toml endings;
-    string save_file = "save.toml";
-    
-    string current_chapter;
-    int pad;
-    string character_name;
-    
-    void load_default_values() {
-        current_chapter = "chapter1";
-        pad = 0;
-        character_name = "神秘角色";
-    }
-
 public:
     Game() {
-        // 加载配置文件
-        config = parse_toml("keyword/foundation.toml");
-        story = parse_toml("keyword/story.toml");
-        endings = parse_toml("keyword/endings.toml");
-        
-        // 初始化游戏状态
-        auto& current_state = config["current_state"];
-        current_chapter = current_state.contains("current_chapter") 
-                            ? current_state["current_chapter"].as<string>() 
-                            : "chapter1";
-        pad = current_state.contains("pad") 
-              ? current_state["pad"].as<int>() 
-              : 0;
-        character_name = config["character"].contains("character_name") 
-                          ? config["character"]["character_name"].as<string>() 
-                          : "神秘角色";
-        
-        // 检查并设置默认值
-        if (!config["current_state"].contains("current_chapter")) {
-            cout << "警告：'current_chapter' 键缺失，使用默认值 'chapter1'。" << endl;
-            current_chapter = "chapter1";
-        }
-        if (!config["current_state"].contains("pad")) {
-            cout << "警告：'pad' 键缺失，使用默认值 0。" << endl;
-            pad = 0;
-        }
-        if (!config["character"].contains("character_name")) {
-            cout << "警告：'character_name' 键缺失，使用默认值 '神秘角色'。" << endl;
-            character_name = "神秘角色";
-        }
+        logger->info("初始化游戏...");
+        loadConfig("keyword/foundation.toml");
+        loadStory("keyword/story.toml");
+        loadEndings("keyword/endings.toml");
+        loadGame();
+        showIntro();
+        run();
     }
 
-    void save_game() {
-        toml::Tompkin::Toml save_data;
-        save_data["current_chapter"] = current_chapter;
-        save_data["pad"] = pad;
-        save_toml(save_file, save_data);
-        cout << "游戏已保存！" << endl;
+private:
+    toml::table config, story, endings;
+    std::string currentChapter = "chapter1";
+    int pad = 0;
+    std::string characterName = "神秘角色";
+
+    void loadConfig(const std::string& filePath) {
+        config = loadTomlFile(filePath);
+        currentChapter = config["current_state"].get<std::string>("current_chapter", "chapter1");
+        pad = config["current_state"].get<int>("pad", 0);
+        characterName = config["character"].get<std::string>("character_name", "神秘角色");
     }
 
-    void load_game() {
-        if (filesystem::exists(save_file)) {
-            auto save_data = parse_toml(save_file);
-            current_chapter = save_data["current_chapter"].as<string>();
-            pad = save_data["pad"].as<int>();
-            cout << "游戏加载成功！" << endl;
+    void loadStory(const std::string& filePath) {
+        story = loadTomlFile(filePath);
+    }
+
+    void loadEndings(const std::string& filePath) {
+        endings = loadTomlFile(filePath);
+    }
+
+    toml::table loadTomlFile(const std::string& filePath) {
+        std::ifstream file(filePath);
+        if (!file) {
+            logger->error("文件未找到: {}", filePath);
+            throw std::runtime_error("文件未找到: " + filePath);
+        }
+        toml::table table;
+        file >> table;
+        return table;
+    }
+
+    void saveGame() {
+        toml::table saveData;
+        saveData["current_chapter"] = currentChapter;
+        saveData["pad"] = pad;
+
+        std::ofstream file("save.toml");
+        file << saveData;
+        logger->info("游戏已保存！");
+    }
+
+    void loadGame() {
+        if (std::ifstream file("save.toml")) {
+            toml::table saveData;
+            file >> saveData;
+            currentChapter = saveData["current_chapter"].get<std::string>("chapter1");
+            pad = saveData["pad"].get<int>(0);
+            logger->info("游戏加载成功！");
         } else {
-            cout << "没有找到存档文件，开始新游戏。" << endl;
-            load_default_values();
+            logger->info("没有找到存档文件，开始新游戏。");
         }
     }
 
-    void show_intro() {
-        cout << config["intro"].as<string>() << endl;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << "按回车键继续..." << endl;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    void showIntro() {
+        try {
+            logger->info("显示游戏介绍");
+            std::cout << config["intro"]["text"].get<std::string>() << std::endl;
+        } catch (const std::exception& e) {
+            logger->warn("游戏介绍缺失，使用默认内容。");
+            std::cout << "游戏介绍缺失，使用默认内容。" << std::endl;
+        }
+        std::cin.ignore();
     }
 
-    void show_story(const string& chapter) {
-        for (const auto& line : story[chapter]["lines"]) {
-            cout << line.as<string>() << endl;
-            this_thread::sleep_for(500ms);
+    void run() {
+        logger->info("游戏开始运行...");
+        if (endings.contains(currentChapter)) {
+            showEnding(currentChapter);
+        } else {
+            showStory(currentChapter);
         }
-        show_choices(chapter);
     }
 
-    void show_choices(const string& chapter) {
-        const auto& choices = story[chapter]["choices"];
-        for (size_t i = 0; i < choices.size(); ++i) {
-            cout << i + 1 << ". " << choices[i]["text"].as<string>() << endl;
-        }
-        
-        int choice_idx;
-        while (true) {
-            cout << "请输入选项编号：" << endl;
-            cin >> choice_idx;
-            
-            if (cin.fail() || choice_idx < 1 || choice_idx > choices.size()) {
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                cout << "无效的选项编号，请重新输入。" << endl;
-            } else {
-                handle_choice(chapter, choices[choice_idx - 1]);
-                break;
+    void showStory(const std::string& chapter) {
+        logger->info("显示剧情: {}", chapter);
+        std::string lines = story[chapter]["lines"].get<std::string>();
+        std::string characterName = this->characterName;
+
+        // 动态对话覆盖逻辑
+        if (story[chapter].contains("pad_dialogues")) {
+            auto padDialogues = story[chapter]["pad_dialogues"].as_array();
+            for (const auto& dialogue : padDialogues) {
+                auto range = dialogue["range"].get<std::string>();
+                if (isInRange(pad, range)) {
+                    lines = dialogue["lines"].get<std::string>();
+                    break;
+                }
             }
         }
+
+        // 显示对话
+        std::cout << std::regex_replace(lines, std::regex("\\{character_name\\}"), characterName) << std::endl;
+
+        // 显示选择菜单
+        showChoices(chapter);
     }
 
-    void handle_choice(const string& chapter, const toml::Tompkin::Toml& choice) {
-        pad += choice["pad_change"].as<int>();
-        current_chapter = choice["next_chapter"].as<string>();
-        
-        if (endings.count(current_chapter)) {
-            show_ending(current_chapter);
+    void showChoices(const std::string& chapter) {
+        logger->info("显示选择菜单: {}", chapter);
+        auto choices = story[chapter]["choices"].as_array();
+        for (size_t i = 0; i < choices.size(); ++i) {
+            std::cout << i + 1 << ". " << choices[i]["text"].get<std::string>() << std::endl;
+        }
+
+        int choice;
+        std::cin >> choice;
+        if (choice < 1 || choice > choices.size()) {
+            logger->error("无效的选项编号");
+            std::cout << "无效的选项编号，请重新输入。" << std::endl;
+            showChoices(chapter);
+            return;
+        }
+
+        handleChoice(chapter, choices[choice - 1]);
+    }
+
+    void handleChoice(const std::string& chapter, const toml::node& choiceNode) {
+        auto choice = choiceNode.as_table();
+        try {
+            pad += choice["pad_change"].get<int>(0);
+            currentChapter = choice["next_chapter"].get<std::string>();
+            pad = std::clamp(pad, -100, 100);  // 钳制 PAD 值
+            logger->info("处理玩家选择: {}", choice["text"].get<std::string>());
+        } catch (const std::exception& e) {
+            logger->error("选择项格式错误: {}", e.what());
+            std::cout << "选择项格式错误，游戏无法继续。" << std::endl;
+            askRestart();
+            return;
+        }
+
+        if (endings.contains(currentChapter)) {
+            showEnding(currentChapter);
         } else {
-            show_story(current_chapter);
+            showStory(currentChapter);
         }
     }
 
-    void show_ending(const string& ending_key) {
-        for (const auto& line : endings[ending_key]["lines"]) {
-            cout << line.as<string() << endl;
-            this_thread::sleep_for(500ms);
-        }
-        cout << "游戏结束！" << endl;
-        save_game();
-        ask_restart();
+    void showEnding(const std::string& endingKey) {
+        logger->info("显示结局: {}", endingKey);
+        std::string endingLines = endings[endingKey]["lines"].get<std::string>();
+        std::cout << std::regex_replace(endingLines, std::regex("\\{character_name\\}"), characterName) << std::endl;
+        std::cout << "游戏结束！" << std::endl;
+        saveGame();
+        askRestart();
     }
 
-    void ask_restart() {
-        char restart;
-        cout << "是否重新开始游戏？(y/n)" << endl;
-        cin >> restart;
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        
-        if (restart == 'y') {
-            reset_game();
+    void askRestart() {
+        logger->info("询问用户是否重新开始游戏");
+        std::string restart;
+        std::cout << "是否重新开始游戏？(y/n) ";
+        std::cin >> restart;
+        if (restart == "y" || restart == "yes") {
+            resetGame();
         } else {
-            cout << "感谢游玩，再见！" << endl;
+            std::cout << "感谢游玩，再见！" << std::endl;
+            logger->info("游戏结束，用户选择退出。");
             exit(0);
         }
     }
 
-    void reset_game() {
-        load_default_values();
-        save_game();
+    void resetGame() {
+        logger->info("重置游戏状态...");
+        currentChapter = "chapter1";
+        pad = 0;
+        saveGame();
+        std::cout << "游戏已重置，重新开始游戏。" << std::endl;
         run();
     }
 
-    void run() {
-        load_game();
-        show_intro();
-        
-        if (endings.count(current_chapter)) {
-            show_ending(current_chapter);
-        } else {
-            show_story(current_chapter);
+    bool isInRange(int value, const std::string& rangeStr) {
+        // 简单的范围解析逻辑
+        std::regex rangeRegex(R"((\d+)\s*-\s*(\d+))");
+        std::smatch match;
+        if (std::regex_search(rangeStr, match, rangeRegex)) {
+            int start = std::stoi(match[1].str());
+            int end = std::stoi(match[2].str());
+            return value >= start && value <= end;
         }
+        return false;
     }
 };
 
 int main() {
-    Game game;
-    game.run();
+    try {
+        Game game;
+    } catch (const std::exception& e) {
+        logger->error("发生错误: {}", e.what());
+        std::cerr << "发生错误: " << e.what() << std::endl;
+    }
     return 0;
 }
